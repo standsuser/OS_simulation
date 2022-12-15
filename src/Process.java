@@ -101,5 +101,30 @@ public class Process {
 	public void setEvent(String event) {
 		this.event = event;
 	}
+
+	public static void processA() {
+		Process processA = createProcess();
+		processA.state = ProcessState.READY;
+		System.out.println("Enter File Name.");
+		assign("file");
+		processA.state = ProcessState.RUNNING;
+		readFile(getVariable("file"));
+		delete("file");
+		processA.state = ProcessState.TERMINATED;
+	}
+	
+	public static void processB() {
+		Process processB = createProcess();
+		processB.state = ProcessState.READY;
+		System.out.println("Enter File Name.");
+		assign("file");
+		System.out.println("Enter data.");;
+		assign("data");
+		processB.state = ProcessState.RUNNING;
+		writeFile(getVariable("file"), getVariable("data"));
+		delete("file");
+		delete("data");
+		processB.state = ProcessState.TERMINATED;
+	}
 	
 }

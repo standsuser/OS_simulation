@@ -1,6 +1,6 @@
-/*import java.util.Queue;
+import java.util.Queue;
 
-zeyad: mostafa 2al its wrong but seebh for now sadge :( L RATIO+NO LIFE
+//zeyad: mostafa 2al its wrong but seebh for now sadge :( L RATIO+NO LIFE
 
 public class CountingSemaphore {
 	int count;
@@ -11,8 +11,8 @@ public class CountingSemaphore {
 		if(count<0){
 			queue.add(process);
 			process.state = ProcessState.BLOCKED;
-			 place this process in s.queue 
-			 block this process 
+			//  place this process in s.queue 
+			//  block this process 
 		}
 			
 		}
@@ -23,8 +23,8 @@ public class CountingSemaphore {
 		if(count>0){
 			semPrintWait(queue.peek());
 			queue.remove().state = ProcessState.READY;
-			 remove a process P from s.queue 
-			 place process P on ready list 
+			//  remove a process P from s.queue 
+			//  place process P on ready list 
 		}
 		}
 	
@@ -34,8 +34,8 @@ public class CountingSemaphore {
 		if(count<0){
 			queue.add(process);
 			process.state = ProcessState.BLOCKED;
-			 place this process in s.queue 
-			 block this process 
+			//  place this process in s.queue 
+			//  block this process 
 		}
 	}
 
@@ -44,8 +44,8 @@ public class CountingSemaphore {
 		if(count>0){
 			semAssignWait(queue.peek());
 			queue.remove().state = ProcessState.READY;
-			 remove a process P from s.queue 
-			 place process P on ready list 
+			//  remove a process P from s.queue 
+			//  place process P on ready list 
 		}
 	}
 
@@ -54,8 +54,8 @@ public class CountingSemaphore {
 		if(count<0){
 			queue.add(process);
 			process.state = ProcessState.BLOCKED;
-			 place this process in s.queue 
-			 block this process 
+			//  place this process in s.queue 
+			//  block this process 
 		}
 	}
 
@@ -64,8 +64,8 @@ public class CountingSemaphore {
 		if(count>0){
 			semWriteWait(queue.peek());
 			queue.remove().state = ProcessState.READY;
-			 remove a process P from s.queue 
-			 place process P on ready list 
+			//  remove a process P from s.queue 
+			//  place process P on ready list 
 		}
 	}
 
@@ -74,8 +74,8 @@ public class CountingSemaphore {
 		if(count<0){
 			queue.add(process);
 			process.state = ProcessState.BLOCKED;
-			 place this process in s.queue 
-			 block this process 
+			//  place this process in s.queue 
+			//  block this process 
 		}
 	}
 
@@ -84,11 +84,10 @@ public class CountingSemaphore {
 		if(count>0){
 			semReadWait(queue.peek());
 			queue.remove().state = ProcessState.READY;
-			 remove a process P from s.queue 
-			 place process P on ready list 
+			//  remove a process P from s.queue 
+			//  place process P on ready list 
 		}
 	}
 }
 
 
-*/
