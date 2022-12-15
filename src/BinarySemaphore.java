@@ -18,7 +18,7 @@ public class BinarySemaphore {
 		if (queue.isEmpty())
 			availability = true;
 		else {
-			semPrint Wait(queue.peek());
+			semPrintWait(queue.peek());
 			queue.remove().state = ProcessState.READY;
 			/* remove a process P from s.queue */
 			/* place process P on ready list */
