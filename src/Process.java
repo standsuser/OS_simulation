@@ -14,12 +14,14 @@ public class Process {
 	public int ProcessID; //ID
 	public int ParentProcessID; //ID of parent
 	public int userID;
+	public int remainingExecutionTime;
 	public String registers;
 	public String data;
 	public ProcessState state; //State
 	public Priority priority; //Priority
 	public String event; //Event the process is waiting for before it can run again
-	
+	public static Queue<Process> jobQueue;
+
 	//public String ProcessControlInformation;
 
 	public Process() {
@@ -28,6 +30,8 @@ public class Process {
 		state = ProcessState.NEW;
 		priority = Priority.Normal;
 		event = "";
+		jobQueue.add(this);
+
 	}
 
 	public int getProgramCounter() {
@@ -100,6 +104,14 @@ public class Process {
 
 	public void setEvent(String event) {
 		this.event = event;
+	}
+
+	public int getRemainingExecutionTime() {
+		return remainingExecutionTime;
+	}
+
+	public void setRemainingExecutionTime(int remainingExecutionTime) {
+		this.remainingExecutionTime = remainingExecutionTime;
 	}
 
 	public static void processA() {

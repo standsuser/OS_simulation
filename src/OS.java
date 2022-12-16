@@ -101,6 +101,16 @@ public class OS {
 		return process;
 	}
 
+	//MARIAM BEGIN HERE
+
+
+
+
+
+
+
+	//MARIAM END
+
 	public static void main(String[] args) {
 		String s = "";
 		//create process A and B object
