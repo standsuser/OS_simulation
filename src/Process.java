@@ -28,7 +28,7 @@ public class Process {
 		ProcessID = ProcessIDCounter++;
 		programCounter = 0;
 		state = ProcessState.NEW;
-		priority = Priority.Normal;
+		priority = Priority.Medium;
 		event = "";
 		jobQueue.add(this);
 
@@ -115,27 +115,27 @@ public class Process {
 	}
 
 	public static void processA() {
-		Process processA = createProcess();
+		Process processA = OS.createProcess();
 		processA.state = ProcessState.READY;
 		System.out.println("Enter File Name.");
-		assign("file");
+		OS.assign("file");
 		processA.state = ProcessState.RUNNING;
-		readFile(getVariable("file"));
-		delete("file");
+		OS.readFile(OS.getVariable("file"));
+		OS.delete("file");
 		processA.state = ProcessState.TERMINATED;
 	}
 	
 	public static void processB() {
-		Process processB = createProcess();
+		Process processB = OS.createProcess();
 		processB.state = ProcessState.READY;
 		System.out.println("Enter File Name.");
-		assign("file");
+		OS.assign("file");
 		System.out.println("Enter data.");;
-		assign("data");
+		OS.assign("data");
 		processB.state = ProcessState.RUNNING;
-		writeFile(getVariable("file"), getVariable("data"));
-		delete("file");
-		delete("data");
+		OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
+		OS.delete("file");
+		OS.delete("data");
 		processB.state = ProcessState.TERMINATED;
 	}
 	

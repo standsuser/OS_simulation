@@ -97,13 +97,23 @@ public class OS {
 	
 	public static Process createProcess() {
 		Process process = new Process();
-		//MUST SET ATTRIBUTES
 		return process;
 	}
 
 	//MARIAM BEGIN HERE
 
 
+	public static void Scheduler_RR(){
+
+	} 
+	
+	public static void Scheduler_MLQS(){
+
+	}  
+	
+	public static void Scheduler_FCFS(){
+
+	}
 
 
 
@@ -114,8 +124,8 @@ public class OS {
 	public static void main(String[] args) {
 		String s = "";
 		//create process A and B object
-		processB();
-		processA();
+		Process.processA();
+		Process.processB();
 		System.out.println("Process Terminated!");
 	}
 	

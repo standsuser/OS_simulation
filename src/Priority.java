@@ -1,4 +1,4 @@
 
 public enum Priority {
-	RealTime, High, AboveNormal, Normal, BelowNormal, Low
+	 High, Medium, Low
 }
