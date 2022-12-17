@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-
 public class OS {
 	public static View view = new View();
 	public static int counter = 0;
@@ -53,13 +52,13 @@ public class OS {
 		boolean flag = false;
 		for (int i = 0; i < variableNames.length; i++) {
 			if (variableNames[i] != null && variableNames[i].equals(st.split(" ")[0])) {
-				System.out.print(variableValue[i]);
+				System.out.println(variableValue[i]);
 				flag = true;
 				break;
 			}
 		}
 		if (!flag) {
-			System.out.print(st);
+			System.out.println(st);
 		}
 	}
 
@@ -106,53 +105,57 @@ public class OS {
 	}
 
 	public static void Scheduler_RR() {
-        // move the processes from the jobQueue into the readyQueue
-        while (!jobQueue.isEmpty()) {
-            if(jobQueue.peek().state == ProcessState.READY)
-                readyQueue.add(jobQueue.remove());
-        }
-        // Do the actual Round-Robin scheduling
-        while (!threadQueue.isEmpty()) {
-			System.out.println("hiiiii");
-            view.queue.setText("Ready Queue: " + readyQueue);
-            Thread currThread = threadQueue.remove();
-            Process currProc = readyQueue.remove();
-            if(currProc.state == ProcessState.READY) {
-                if (!currThread.isAlive()) {
-                    currThread.start();//if it is first time to run
-                } else {
-                    currThread.run();//if it ran before
-                }
-                currProc.state = ProcessState.RUNNING;
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                }
-                currThread.interrupt();
-            }
-            if (currProc.state == ProcessState.RUNNING)
-                currProc.state = ProcessState.READY;
-            if (currThread.isAlive()) {
-                threadQueue.add(currThread);
-                readyQueue.add(currProc);
-            } else {
-                currProc.state = ProcessState.TERMINATED;
-                terminatedQueue.add(currProc);
-            }
-        }
-    }
+		// move the processes from the jobQueue into the readyQueue
+		while (!jobQueue.isEmpty()) {
+			jobQueue.peek().setState(ProcessState.READY);
+			readyQueue.add(jobQueue.remove());
+		}
+
+		// Do the actual Round-Robin scheduling
+		while (!threadQueue.isEmpty()) {
+			view.queue.setText("Ready Queue: " + readyQueue);
+			Thread currThread = threadQueue.remove();
+			Process currProc = readyQueue.remove();
+			if (currProc.state == ProcessState.READY) {
+				if (!currThread.isAlive()) {
+					currThread.start();// if it is first time to run
+				} else {
+					currThread.resume();// if it ran before
+				}
+				currProc.state = ProcessState.RUNNING;
+				try {
+					Thread.sleep(2);
+				} catch (InterruptedException e) {
+				}
+				currThread.suspend();
+			}
+			if (currProc.state == ProcessState.RUNNING)
+				currProc.state = ProcessState.READY;
+			if (currThread.isAlive()) {
+				threadQueue.add(currThread);
+				readyQueue.add(currProc);
+			} else {
+				currProc.state = ProcessState.TERMINATED;
+				terminatedQueue.add(currProc);
+			}
+		}
+		view.repaint();
+		view.revalidate();
+		view.queue.setText("Ready Queue: " + readyQueue);
+	}
 
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
 
 		// while (!jobQueue.isEmpty()) {
-		// readyQueue.add(jobQueue.remove());
+		// 	jobQueue.peek().setState(ProcessState.READY);
+		// 	readyQueue.add(jobQueue.remove());
 		// }
-		// should we loop on ready queue or jobqueue
+		//should we loop on ready queue or jobqueue
 
-		while (!jobQueue.isEmpty()) {
+		while (!readyQueue.isEmpty()) {
 
-			switch (jobQueue.peek().priority) {
+			switch (readyQueue.peek().priority) {
 				case Low:
 					lowPriority.add(readyQueue.remove());
 					break;
@@ -164,15 +167,19 @@ public class OS {
 					break;
 			}
 
-			
+
+
 
 		}
 
 	}
 
-	
-
 	public static void Scheduler_FCFS() {
+
+		while (!jobQueue.isEmpty()) {
+			jobQueue.peek().setState(ProcessState.READY);
+			readyQueue.add(jobQueue.remove());
+		}
 
 		// check whose turn is it.
 		// put chosen process in running queue
@@ -188,11 +195,9 @@ public class OS {
 	}
 
 	public static void main(String[] args) {
-		Process processA = new Process();
 		Process.processA();
 
-		Process processB = new Process();
-		Process.processA();
+		Process.processB();
 
 		Process.processC();
 		Process.processD();

@@ -34,17 +34,14 @@ public class Process {
 	}
 
 
-	
-	// assign read
 	public static void processA() {
 		Process processA = OS.createProcess();
-		processA.state = ProcessState.READY;
 		Thread a = new Thread(new Runnable() {
 			public void run() {
-				OS.printSemaphore.semPrintWait(processA);
-				System.out.println("Process A: Enter File Name.");
-				OS.printSemaphore.semPrintPost();
 				OS.assignSemaphore.semAssignWait(processA);
+				OS.printSemaphore.semPrintWait(processA);
+				OS.print("PID" + processA.getProcessID() + ": Enter File Name for Read.");
+				OS.printSemaphore.semPrintPost();
 				OS.assign("file");
 				OS.assignSemaphore.semAssignPost();
 				processA.state = ProcessState.RUNNING;
@@ -56,7 +53,6 @@ public class Process {
 				OS.deleteSemaphore.semDeleteWait(processA);
 				OS.delete("file");
 				OS.deleteSemaphore.semDeletePost();
-				System.out.println("Reached A");
 				processA.state = ProcessState.TERMINATED;
 			}
 		});
@@ -66,19 +62,18 @@ public class Process {
 	// assign write
 	public static void processB() {
 		Process processB = OS.createProcess();
-		processB.state = ProcessState.READY;
 		Thread a = new Thread(new Runnable() {
 			public void run() {
-				OS.printSemaphore.semPrintWait(processB);
-				System.out.println("Process B: Enter File Name.");
-				OS.printSemaphore.semPrintPost();
 				OS.assignSemaphore.semAssignWait(processB);
+				OS.printSemaphore.semPrintWait(processB);
+				OS.print("PID" + processB.getProcessID() + ": Enter File Name for Write.");
+				OS.printSemaphore.semPrintPost();
 				OS.assign("file");
 				OS.assignSemaphore.semAssignPost();
-				OS.printSemaphore.semPrintWait(processB);
-				System.out.println("Process B: Enter data.");
-				OS.printSemaphore.semPrintPost();
 				OS.assignSemaphore.semAssignWait(processB);
+				OS.printSemaphore.semPrintWait(processB);
+				OS.print("PID" + processB.getProcessID() + ": Enter data for Write.");
+				OS.printSemaphore.semPrintPost();
 				OS.assign("data");
 				OS.assignSemaphore.semAssignPost();
 				processB.state = ProcessState.RUNNING;
@@ -91,7 +86,6 @@ public class Process {
 				OS.delete("file");
 				OS.delete("data");
 				OS.deleteSemaphore.semDeletePost();
-				System.out.println("Reached B");
 				processB.state = ProcessState.TERMINATED;
 			}
 		});
@@ -107,7 +101,6 @@ public class Process {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
 				}
-				System.out.println("Ich leibe meine frau");
 
 			}
 		});
@@ -123,7 +116,6 @@ public class Process {
 					Thread.sleep(20);
 				} catch (InterruptedException e) {
 				}
-				System.out.println("Du bist mein schatz");
 
 			}
 		});
