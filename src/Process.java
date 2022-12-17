@@ -33,6 +33,103 @@ public class Process {
 		System.out.println("Job Queue: " + OS.jobQueue);
 	}
 
+
+	
+	// assign read
+	public static void processA() {
+		Process processA = OS.createProcess();
+		Thread a = new Thread(new Runnable() {
+			public void run() {
+				processA.state = ProcessState.READY;
+				OS.printSemaphore.semPrintWait(processA);
+				System.out.println("Process A: Enter File Name.");
+				OS.printSemaphore.semPrintPost();
+				OS.assignSemaphore.semAssignWait(processA);
+				OS.assign("file");
+				OS.assignSemaphore.semAssignPost();
+				processA.state = ProcessState.RUNNING;
+				OS.readSemaphore.semReadWait(processA);// zeyad : DEADLOCK MIGHT HAPPEN HEHE
+				OS.getVariableSemaphore.semGetVariableWait(processA);
+				OS.readFile(OS.getVariable("file"));
+				OS.readSemaphore.semReadPost();// zeyad :not sure mafrood abdlha m3a t7tha wla la
+				OS.getVariableSemaphore.semGetVariablePost();
+				OS.deleteSemaphore.semDeleteWait(processA);
+				OS.delete("file");
+				OS.deleteSemaphore.semDeletePost();
+				System.out.println("Reached A");
+				processA.state = ProcessState.TERMINATED;
+			}
+		});
+		OS.threadQueue.add(a);
+	}
+
+	// assign write
+	public static void processB() {
+		Process processB = OS.createProcess();
+		Thread a = new Thread(new Runnable() {
+			public void run() {
+				processB.state = ProcessState.READY;
+				OS.printSemaphore.semPrintWait(processB);
+				System.out.println("Process B: Enter File Name.");
+				OS.printSemaphore.semPrintPost();
+				OS.assignSemaphore.semAssignWait(processB);
+				OS.assign("file");
+				OS.assignSemaphore.semAssignPost();
+				OS.printSemaphore.semPrintWait(processB);
+				System.out.println("Process B: Enter data.");
+				OS.printSemaphore.semPrintPost();
+				OS.assignSemaphore.semAssignWait(processB);
+				OS.assign("data");
+				OS.assignSemaphore.semAssignPost();
+				processB.state = ProcessState.RUNNING;
+				OS.writeSemaphore.semWriteWait(processB);
+				OS.getVariableSemaphore.semGetVariableWait(processB);
+				OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
+				OS.writeSemaphore.semWritePost();
+				OS.getVariableSemaphore.semGetVariablePost();
+				OS.deleteSemaphore.semDeleteWait(processB);
+				OS.delete("file");
+				OS.delete("data");
+				OS.deleteSemaphore.semDeletePost();
+				System.out.println("Reached B");
+				processB.state = ProcessState.TERMINATED;
+			}
+		});
+		OS.threadQueue.add(a);
+	}
+
+	public static void processC() {
+		Process processC = OS.createProcess();
+		Thread a = new Thread(new Runnable() {
+			public void run() {
+				System.out.println("Ich leibe meine frau");
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+				}
+				System.out.println("Ich leibe meine frau");
+
+			}
+		});
+		OS.threadQueue.add(a);
+	}
+
+	public static void processD() {
+		Process processD = OS.createProcess();
+		Thread a = new Thread(new Runnable() {
+			public void run() {
+				System.out.println("Du bist mein schatz");
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+				}
+				System.out.println("Du bist mein schatz");
+
+			}
+		});
+		OS.threadQueue.add(a);
+	}
+
 	public String toString() {
 		return this.ProcessID + "";
 	}

@@ -27,9 +27,6 @@ public class OS {
 	public static Queue<Process> mediumPriority = new LinkedList<Process>();
 	public static Queue<Process> lowPriority = new LinkedList<Process>();
 
-
-
-
 	public static void readFile(String fileName) {
 		BufferedReader br;
 		try {
@@ -144,26 +141,30 @@ public class OS {
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
 
+		// while (!jobQueue.isEmpty()) {
+		// readyQueue.add(jobQueue.remove());
+		// }
+		// should we loop on ready queue or jobqueue
+
 		while (!jobQueue.isEmpty()) {
-			if(){
-			.add(jobQueue.remove());
+
+			switch (jobQueue.peek().priority) {
+				case Low:
+					lowPriority.add(readyQueue.remove());
+					break;
+				case Medium:
+					mediumPriority.add(readyQueue.remove());
+					break;
+				case High:
+					highPriority.add(readyQueue.remove());
+					break;
 			}
 
-
-			switch(jobQueue.peek().priority) {
-				case Low:
-				  System.out.println("Low level");
-				  break;
-				case Medium:
-				   System.out.println("Medium level");
-				  break;
-				case High:
-				  System.out.println("High level");
-				  break;
-			  }
 		}
 
 	}
+
+	
 
 	public static void Scheduler_FCFS() {
 
@@ -175,109 +176,14 @@ public class OS {
 
 	// MARIAM END
 
-	// assign read
-	public static void processA() {
-		Process processA = createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				processA.state = ProcessState.READY;
-				printSemaphore.semPrintWait(processA);
-				System.out.println("Process A: Enter File Name.");
-				printSemaphore.semPrintPost();
-				assignSemaphore.semAssignWait(processA);
-				assign("file");
-				assignSemaphore.semAssignPost();
-				processA.state = ProcessState.RUNNING;
-				readSemaphore.semReadWait(processA);// zeyad : DEADLOCK MIGHT HAPPEN HEHE
-				getVariableSemaphore.semGetVariableWait(processA);
-				readFile(getVariable("file"));
-				readSemaphore.semReadPost();// zeyad :not sure mafrood abdlha m3a t7tha wla la
-				getVariableSemaphore.semGetVariablePost();
-				deleteSemaphore.semDeleteWait(processA);
-				delete("file");
-				deleteSemaphore.semDeletePost();
-				System.out.println("Reached A");
-				processA.state = ProcessState.TERMINATED;
-			}
-		});
-		threadQueue.add(a);
-	}
-
-	// assign write
-	public static void processB() {
-		Process processB = createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				processB.state = ProcessState.READY;
-				printSemaphore.semPrintWait(processB);
-				System.out.println("Process B: Enter File Name.");
-				printSemaphore.semPrintPost();
-				assignSemaphore.semAssignWait(processB);
-				assign("file");
-				assignSemaphore.semAssignPost();
-				printSemaphore.semPrintWait(processB);
-				System.out.println("Process B: Enter data.");
-				printSemaphore.semPrintPost();
-				assignSemaphore.semAssignWait(processB);
-				assign("data");
-				assignSemaphore.semAssignPost();
-				processB.state = ProcessState.RUNNING;
-				writeSemaphore.semWriteWait(processB);
-				getVariableSemaphore.semGetVariableWait(processB);
-				writeFile(getVariable("file"), getVariable("data"));
-				writeSemaphore.semWritePost();
-				getVariableSemaphore.semGetVariablePost();
-				deleteSemaphore.semDeleteWait(processB);
-				delete("file");
-				delete("data");
-				deleteSemaphore.semDeletePost();
-				System.out.println("Reached B");
-				processB.state = ProcessState.TERMINATED;
-			}
-		});
-		threadQueue.add(a);
-	}
-
-	public static void processC() {
-		Process processC = createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				System.out.println("Ich leibe meine frau");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-				}
-				System.out.println("Ich leibe meine frau");
-
-			}
-		});
-		threadQueue.add(a);
-	}
-
-	public static void processD() {
-		Process processD = createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				System.out.println("Du bist mein schatz");
-				try {
-					Thread.sleep(20);
-				} catch (InterruptedException e) {
-				}
-				System.out.println("Du bist mein schatz");
-
-			}
-		});
-		threadQueue.add(a);
-	}
-
 	public static Process createProcess() {
 		Process process = new Process();
 		return process;
 	}
 
 	public static void main(String[] args) {
-		processC();
-		processD();
+		Process.processC();
+		Process.processD();
 		Scheduler_RR();
 		System.out.println("Process Terminated!");
 	}
