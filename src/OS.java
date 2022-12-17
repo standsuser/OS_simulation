@@ -23,6 +23,12 @@ public class OS {
 	public static Queue<Process> readyQueue = new LinkedList<Process>();
 	public static Queue<Process> terminatedQueue = new LinkedList<Process>();
 	public static Queue<Thread> threadQueue = new LinkedList<Thread>();
+	public static Queue<Process> highPriority = new LinkedList<Process>();
+	public static Queue<Process> mediumPriority = new LinkedList<Process>();
+	public static Queue<Process> lowPriority = new LinkedList<Process>();
+
+
+
 
 	public static void readFile(String fileName) {
 		BufferedReader br;
@@ -137,6 +143,10 @@ public class OS {
 
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
+
+		while (!jobQueue.isEmpty()) {
+			readyQueue.add(jobQueue.remove());
+		}
 
 	}
 
