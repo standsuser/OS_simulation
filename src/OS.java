@@ -7,8 +7,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class OS {
 
+public class OS {
+	public static View view = new View();
 	public static int counter = 0;
 	public static String user = "Zeyad Shafik";
 	public static String[] variableNames = new String[1000]; // Memory
@@ -105,38 +106,41 @@ public class OS {
 	}
 
 	public static void Scheduler_RR() {
-		// move the processes from the jobQueue into the readyQueue
-		while (!jobQueue.isEmpty()) {
-			readyQueue.add(jobQueue.remove());
-		}
-		// Do the actual Round-Robin scheduling
-		while (!threadQueue.isEmpty()) {
-			System.out.println("Ready Queue: " + readyQueue);
-			Thread currThread = threadQueue.remove();
-			Process currProc = readyQueue.remove();
-			if (!currThread.isAlive()) {
-				currThread.start();
-			} else {
-				currThread.resume();
-			}
-			currProc.state = ProcessState.RUNNING;
-			System.out.println(currProc + " is now running");
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-			}
-			currThread.suspend();
-			currProc.state = ProcessState.READY;
-			System.out.println(currProc + " is kicked out of the processor");
-			if (currThread.isAlive()) {
-				threadQueue.add(currThread);
-				readyQueue.add(currProc);
-			} else {
-				currProc.state = ProcessState.TERMINATED;
-				terminatedQueue.add(currProc);
-			}
-		}
-	}
+        // move the processes from the jobQueue into the readyQueue
+        while (!jobQueue.isEmpty()) {
+            if(jobQueue.peek().state == ProcessState.READY)
+                readyQueue.add(jobQueue.remove());
+        }
+        // Do the actual Round-Robin scheduling
+        while (!threadQueue.isEmpty()) {
+			System.out.println("hiiiii");
+            view.queue.setText("Ready Queue: " + readyQueue);
+            Thread currThread = threadQueue.remove();
+            Process currProc = readyQueue.remove();
+            if(currProc.state == ProcessState.READY) {
+                if (!currThread.isAlive()) {
+                    currThread.start();//if it is first time to run
+                } else {
+                    currThread.run();//if it ran before
+                }
+                currProc.state = ProcessState.RUNNING;
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                }
+                currThread.interrupt();
+            }
+            if (currProc.state == ProcessState.RUNNING)
+                currProc.state = ProcessState.READY;
+            if (currThread.isAlive()) {
+                threadQueue.add(currThread);
+                readyQueue.add(currProc);
+            } else {
+                currProc.state = ProcessState.TERMINATED;
+                terminatedQueue.add(currProc);
+            }
+        }
+    }
 
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
@@ -160,6 +164,8 @@ public class OS {
 					break;
 			}
 
+			
+
 		}
 
 	}
@@ -182,6 +188,12 @@ public class OS {
 	}
 
 	public static void main(String[] args) {
+		Process processA = new Process();
+		Process.processA();
+
+		Process processB = new Process();
+		Process.processA();
+
 		Process.processC();
 		Process.processD();
 		Scheduler_RR();

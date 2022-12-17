@@ -38,9 +38,9 @@ public class Process {
 	// assign read
 	public static void processA() {
 		Process processA = OS.createProcess();
+		processA.state = ProcessState.READY;
 		Thread a = new Thread(new Runnable() {
 			public void run() {
-				processA.state = ProcessState.READY;
 				OS.printSemaphore.semPrintWait(processA);
 				System.out.println("Process A: Enter File Name.");
 				OS.printSemaphore.semPrintPost();
@@ -66,9 +66,9 @@ public class Process {
 	// assign write
 	public static void processB() {
 		Process processB = OS.createProcess();
+		processB.state = ProcessState.READY;
 		Thread a = new Thread(new Runnable() {
 			public void run() {
-				processB.state = ProcessState.READY;
 				OS.printSemaphore.semPrintWait(processB);
 				System.out.println("Process B: Enter File Name.");
 				OS.printSemaphore.semPrintPost();
