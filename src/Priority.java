@@ -1,4 +1,4 @@
 
 public enum Priority {
-	 High, Medium, Low
+	High, Medium, Low
 }

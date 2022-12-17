@@ -1,11 +1,11 @@
 
 public class Disk {
-	
+
 	boolean busy;
 	String operation;
 	String data;
 	int size;
-	
+
 	public Disk(int size) {
 		busy = false;
 		operation = "";
@@ -14,7 +14,7 @@ public class Disk {
 			data += (char) (Math.random() * 256);
 		}
 	}
-	
+
 	public String readFrom(int address, int length) {
 		busy = true;
 		operation = "Read";

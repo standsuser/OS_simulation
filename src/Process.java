@@ -4,25 +4,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
 public class Process {
-	//event , scheduling information
-	public static int ProcessIDCounter = 0; //Process Counter
+	// event , scheduling information
+	public static int ProcessIDCounter = 0; // Process Counter
 	public int programCounter;
-	public int ProcessID; //ID
-	public int ParentProcessID; //ID of parent
+	public int ProcessID; // ID
+	public int ParentProcessID; // ID of parent
 	public int userID;
-	public int remainingExecutionTime;
 	public String registers;
 	public String data;
-	public ProcessState state; //State
-	public Priority priority; //Priority
-	public String event; //Event the process is waiting for before it can run again
-	public static Queue<Process> jobQueue;
+	public ProcessState state; // State
+	public Priority priority; // Priority
+	public String event; // Event the process is waiting for before it can run again
 
-	//public String ProcessControlInformation;
+	// public String ProcessControlInformation;
 
 	public Process() {
 		ProcessID = ProcessIDCounter++;
@@ -30,8 +29,12 @@ public class Process {
 		state = ProcessState.NEW;
 		priority = Priority.Medium;
 		event = "";
-		jobQueue.add(this);
+		OS.jobQueue.add(this);
+		System.out.println("Job Queue: " + OS.jobQueue);
+	}
 
+	public String toString() {
+		return this.ProcessID + "";
 	}
 
 	public int getProgramCounter() {
@@ -106,37 +109,4 @@ public class Process {
 		this.event = event;
 	}
 
-	public int getRemainingExecutionTime() {
-		return remainingExecutionTime;
-	}
-
-	public void setRemainingExecutionTime(int remainingExecutionTime) {
-		this.remainingExecutionTime = remainingExecutionTime;
-	}
-
-	public static void processA() {
-		Process processA = OS.createProcess();
-		processA.state = ProcessState.READY;
-		System.out.println("Enter File Name.");
-		OS.assign("file");
-		processA.state = ProcessState.RUNNING;
-		OS.readFile(OS.getVariable("file"));
-		OS.delete("file");
-		processA.state = ProcessState.TERMINATED;
-	}
-	
-	public static void processB() {
-		Process processB = OS.createProcess();
-		processB.state = ProcessState.READY;
-		System.out.println("Enter File Name.");
-		OS.assign("file");
-		System.out.println("Enter data.");;
-		OS.assign("data");
-		processB.state = ProcessState.RUNNING;
-		OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
-		OS.delete("file");
-		OS.delete("data");
-		processB.state = ProcessState.TERMINATED;
-	}
-	
 }
