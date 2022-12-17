@@ -13,7 +13,6 @@ public class DeleteSemaphore extends BinarySemaphore {
                 } catch (InterruptedException e) {
                 }
             }
-            process.state = ProcessState.RUNNING;
             /* place this process in s.queue */
             /* block this process */
         }

@@ -17,7 +17,6 @@ public class ReadSemaphore extends CountingSemaphore {
                 } catch (InterruptedException e) {
                 }
             }
-            process.state = ProcessState.RUNNING;
             // place this process in s.queue
             // block this process
         }
