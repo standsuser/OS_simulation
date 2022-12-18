@@ -147,13 +147,18 @@ public class OS {
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
 
-		// while (!jobQueue.isEmpty()) {
-		// 	jobQueue.peek().setState(ProcessState.READY);
-		// 	readyQueue.add(jobQueue.remove());
-		// }
-		//should we loop on ready queue or jobqueue
+		Process currProc;
+
+		while (!jobQueue.isEmpty()) {
+			jobQueue.peek().setState(ProcessState.READY);
+			readyQueue.add(jobQueue.remove());
+		}
+		// should we loop on ready queue or jobqueue
 
 		while (!readyQueue.isEmpty()) {
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+					+ "</html>");
 
 			switch (readyQueue.peek().priority) {
 				case Low:
@@ -165,12 +170,56 @@ public class OS {
 				case High:
 					highPriority.add(readyQueue.remove());
 					break;
+				default:
+					highPriority.add(readyQueue.remove()); // should there be default or no if so highpriority or low
+
 			}
 
-
-
-
 		}
+
+		while (!threadQueue.isEmpty()) {
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+					+ "</html>");
+			Thread currThread = threadQueue.remove();
+
+			while (!highPriority.isEmpty()) {
+				currProc = highPriority.remove();
+				if (currProc.state == ProcessState.READY) {
+
+				}
+
+				// ----------------------
+				if (currProc.state == ProcessState.READY) {
+					if (!currThread.isAlive()) {
+						currThread.start();// if it is first time to run
+					} else {
+						currThread.resume();// if it ran before
+					}
+					currProc.state = ProcessState.RUNNING;
+					try {
+						Thread.sleep(2);
+					} catch (InterruptedException e) {
+					}
+					currThread.suspend();
+				}
+				if (currProc.state == ProcessState.RUNNING)
+					currProc.state = ProcessState.READY;
+				if (currThread.isAlive()) {
+					threadQueue.add(currThread);
+					readyQueue.add(currProc);
+				} else {
+					currProc.state = ProcessState.TERMINATED;
+					terminatedQueue.add(currProc);
+				}
+			} // -------------------------------------------
+		}
+
+		view.repaint();
+		view.revalidate();
+		view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+				+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+				+ "</html>");
 
 	}
 
@@ -201,7 +250,8 @@ public class OS {
 
 		Process.processC();
 		Process.processD();
-		Scheduler_RR();
+		// Scheduler_RR();
+		Scheduler_MLQS();
 		System.out.println("Process Terminated!");
 	}
 

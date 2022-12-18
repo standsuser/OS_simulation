@@ -30,7 +30,7 @@ public class Process {
 		priority = Priority.Medium;
 		event = "";
 		OS.jobQueue.add(this);
-		System.out.println("Job Queue: " + OS.jobQueue);
+		System.out.println("Process added to Job Queue: " + OS.jobQueue);
 	}
 
 
