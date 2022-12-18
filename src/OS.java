@@ -307,8 +307,8 @@ public class OS {
 		Process.processC();
 		Process.processD();
 		// Scheduler_RR();
-		// Scheduler_MLQS();
-		Scheduler_FCFS();
+		 Scheduler_MLQS();
+		//Scheduler_FCFS();
 		System.out.println("Process Terminated!");
 	}
 

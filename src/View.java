@@ -16,10 +16,10 @@ public class View extends JFrame{
 		setSize(600,600);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);// centers the Frame
+		setLocationRelativeTo(null);// centers the Frames
 		this.setLayout(null);
 		queue.setFont(new Font("", Font.BOLD, 20));
-		setBounds(queue, 200, 100, 600, 600);
+		setBounds(queue, 0, -50, 600, 600);
 		add(queue);
 		setResizable(false);
 
