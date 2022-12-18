@@ -26,6 +26,8 @@ public class OS {
 	public static Queue<Process> highPriority = new LinkedList<Process>();
 	public static Queue<Process> mediumPriority = new LinkedList<Process>();
 	public static Queue<Process> lowPriority = new LinkedList<Process>();
+	public static Process currProc;
+	public static Thread currThread;
 
 	public static void readFile(String fileName) {
 		BufferedReader br;
@@ -182,66 +184,12 @@ public class OS {
 					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 					+ "</html>");
 
-			while (!highPriority.isEmpty()) {
-				currThread = threadQueue.remove();
-				currProc = highPriority.remove();
-				if (currProc.state == ProcessState.READY) {
+			highHelper();
+			mediumHelper();
+			lowHelper();
 
-					currThread.run();// if it is first time to run
-
-					if (currProc.state == ProcessState.RUNNING)
-						currThread.resume();
-				} else {
-					currProc.state = ProcessState.TERMINATED;
-					terminatedQueue.add(currProc);
-				}
-				view.repaint();
-				view.revalidate();
-				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
-						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
-						+ "</html>");
-			}
-
-			while (!mediumPriority.isEmpty()) {
-				currThread = threadQueue.remove();
-
-				currProc = mediumPriority.remove();
-				if (currProc.state == ProcessState.READY) {
-
-					currThread.run();// if it is first time to run
-
-					if (currProc.state == ProcessState.RUNNING)
-						currThread.resume();
-				} else {
-					currProc.state = ProcessState.TERMINATED;
-					terminatedQueue.add(currProc);
-				}
-				view.repaint();
-				view.revalidate();
-				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
-						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
-						+ "</html>");
-			}
-			while (!lowPriority.isEmpty()) {
-				currThread = threadQueue.remove();
-
-				currProc = lowPriority.remove();
-				if (currProc.state == ProcessState.READY) {
-
-					currThread.run();// if it is first time to run
-
-					if (currProc.state == ProcessState.RUNNING)
-						currThread.resume();
-				} else {
-					currProc.state = ProcessState.TERMINATED;
-					terminatedQueue.add(currProc);
-				}
-				view.repaint();
-				view.revalidate();
-				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
-						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
-						+ "</html>");
-			}
+			if (!highPriority.isEmpty())
+				lowHelper();
 
 		}
 
@@ -253,6 +201,82 @@ public class OS {
 		view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 				+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 				+ "</html>");
+	}
+
+	public static void lowHelper() {
+
+		while (!lowPriority.isEmpty()) {
+			if (!highPriority.isEmpty())
+				highHelper();
+			if (!mediumPriority.isEmpty())
+				mediumHelper();
+			currThread = threadQueue.remove();
+
+			currProc = lowPriority.remove();
+			if (currProc.state == ProcessState.READY) {
+
+				currThread.run();// if it is first time to run
+
+				if (currProc.state == ProcessState.RUNNING)
+					currThread.resume();
+			} else {
+				currProc.state = ProcessState.TERMINATED;
+				terminatedQueue.add(currProc);
+			}
+			view.repaint();
+			view.revalidate();
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+					+ "</html>");
+		}
+	}
+
+	public static void mediumHelper() {
+		if (!highPriority.isEmpty())
+			highHelper();
+		while (!mediumPriority.isEmpty()) {
+			currThread = threadQueue.remove();
+
+			currProc = mediumPriority.remove();
+			if (currProc.state == ProcessState.READY) {
+
+				currThread.run();// if it is first time to run
+
+				if (currProc.state == ProcessState.RUNNING)
+					currThread.resume();
+			} else {
+				currProc.state = ProcessState.TERMINATED;
+				terminatedQueue.add(currProc);
+			}
+			view.repaint();
+			view.revalidate();
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+					+ "</html>");
+		}
+	}
+
+	public static void highHelper() {
+
+		while (!highPriority.isEmpty()) {
+			currThread = threadQueue.remove();
+			currProc = highPriority.remove();
+			if (currProc.state == ProcessState.READY) {
+
+				currThread.run();// if it is first time to run
+
+				if (currProc.state == ProcessState.RUNNING)
+					currThread.resume();
+			} else {
+				currProc.state = ProcessState.TERMINATED;
+				terminatedQueue.add(currProc);
+			}
+			view.repaint();
+			view.revalidate();
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+					+ "</html>");
+		}
 	}
 
 	public static void Scheduler_FCFS() {
@@ -307,8 +331,8 @@ public class OS {
 		Process.processC();
 		Process.processD();
 		// Scheduler_RR();
-		 Scheduler_MLQS();
-		//Scheduler_FCFS();
+		Scheduler_MLQS();
+		// Scheduler_FCFS();
 		System.out.println("Process Terminated!");
 	}
 
