@@ -173,7 +173,7 @@ public class OS {
 					highPriority.add(readyQueue.remove());
 					break;
 				default:
-					highPriority.add(readyQueue.remove()); // should there be default or no if so highpriority or low
+					mediumPriority.add(readyQueue.remove());
 
 			}
 
