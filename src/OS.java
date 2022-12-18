@@ -313,22 +313,31 @@ public class OS {
 
 	// MARIAM END
 
-	public static Process createProcess() { // caroline said will take attributes a or b and priority
-		Process process = new Process();
+	public static Process createProcess(char type, Priority prio) { 
+		Process process = null;
+		switch (type) {
+		case 'A':
+			process = Process.processA();
+			break;
+		case 'B':
+			process = Process.processB();
+			break;
+		}
+		process.setProcessPriority(prio);
+		OS.jobQueue.add(process);
+		//System.out.println("Process added to Job Queue: " + OS.jobQueue); lets not use syso
 		return process;
 	}
 
 	public static void main(String[] args) {
-		Process.processA();
-
-		Process.processB();
-
-		Process.processC();
-		Process.processD();
-		// Scheduler_RR();
-		Scheduler_MLQS();
+		createProcess('A', null);
+		createProcess('B', null);
+		createProcess('A', null);
+		createProcess('B', null);
+		Scheduler_RR();
+		//Scheduler_MLQS();
 		// Scheduler_FCFS();
-		System.out.println("Process Terminated!");
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 
 }
