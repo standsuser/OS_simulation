@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.lang.Thread.State;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -21,13 +22,12 @@ public class OS {
 	public static GetVariableSemaphore getVariableSemaphore = new GetVariableSemaphore(3);
 	public static Queue<Process> jobQueue = new LinkedList<Process>();
 	public static Queue<Process> readyQueue = new LinkedList<Process>();
+	public static ArrayList<Process> blockedProcesses = new ArrayList<Process>();
 	public static Queue<Process> terminatedQueue = new LinkedList<Process>();
-	public static Queue<Thread> threadQueue = new LinkedList<Thread>();
 	public static Queue<Process> highPriority = new LinkedList<Process>();
 	public static Queue<Process> mediumPriority = new LinkedList<Process>();
 	public static Queue<Process> lowPriority = new LinkedList<Process>();
 	public static Process currProc;
-	public static Thread currThread;
 
 	public static void readFile(String fileName) {
 		BufferedReader br;
@@ -149,13 +149,11 @@ public class OS {
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
 
-		Process currProc;
-		Thread currThread;
+
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
 		}
-		// should we loop on ready queue or jobqueue
 
 		while (!readyQueue.isEmpty()) {
 			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
@@ -210,15 +208,14 @@ public class OS {
 				highHelper();
 			if (!mediumPriority.isEmpty())
 				mediumHelper();
-			currThread = threadQueue.remove();
 
 			currProc = lowPriority.remove();
 			if (currProc.state == ProcessState.READY) {
 
-				currThread.run();// if it is first time to run
+				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-					currThread.resume();
+				currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -232,18 +229,18 @@ public class OS {
 	}
 
 	public static void mediumHelper() {
-		if (!highPriority.isEmpty())
-			highHelper();
 		while (!mediumPriority.isEmpty()) {
-			currThread = threadQueue.remove();
+			
+			if (!highPriority.isEmpty())
+				highHelper();
 
 			currProc = mediumPriority.remove();
 			if (currProc.state == ProcessState.READY) {
 
-				currThread.run();// if it is first time to run
+				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-					currThread.resume();
+				currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -259,14 +256,13 @@ public class OS {
 	public static void highHelper() {
 
 		while (!highPriority.isEmpty()) {
-			currThread = threadQueue.remove();
 			currProc = highPriority.remove();
 			if (currProc.state == ProcessState.READY) {
 
-				currThread.run();// if it is first time to run
+				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-					currThread.resume();
+				currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -282,7 +278,6 @@ public class OS {
 	public static void Scheduler_FCFS() {
 
 		Process currProc;
-		Thread currThread;
 
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setState(ProcessState.READY);
@@ -291,15 +286,14 @@ public class OS {
 		view.queue.setText("Ready Queue: " + readyQueue);
 
 		while (!readyQueue.isEmpty()) {
-			currThread = threadQueue.remove();
 
 			currProc = readyQueue.remove();
 			if (currProc.state == ProcessState.READY) {
 
-				currThread.run();// if it is first time to run
+				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-					currThread.resume();
+				currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -310,6 +304,7 @@ public class OS {
 
 		}
 
+		
 		// check whose turn is it.
 		// put chosen process in running queue
 		// run it
