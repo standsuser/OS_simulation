@@ -52,6 +52,7 @@ public class OS {
 
 	public static void print(String st) {
 		boolean flag = false;
+		System.out.print("PID" + currProc.getProcessID() + ": ");
 		for (int i = 0; i < variableNames.length; i++) {
 			if (variableNames[i] != null && variableNames[i].equals(st.split(" ")[0])) {
 				System.out.println(variableValue[i]);
@@ -114,36 +115,38 @@ public class OS {
 		}
 
 		// Do the actual Round-Robin scheduling
-		while (!threadQueue.isEmpty()) {
-			view.queue.setText("Ready Queue: " + readyQueue);
-			Thread currThread = threadQueue.remove();
-			Process currProc = readyQueue.remove();
+		while (!readyQueue.isEmpty() || !blockedProcesses.isEmpty()) {
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
+			currProc = readyQueue.remove();
 			if (currProc.state == ProcessState.READY) {
-				if (!currThread.isAlive()) {
-					currThread.start();// if it is first time to run
+				if (!currProc.isAlive()) {
+					currProc.start();// if it is first time to run
 				} else {
-					currThread.resume();// if it ran before
+					currProc.resume();// if it ran before
 				}
 				currProc.state = ProcessState.RUNNING;
 				try {
 					Thread.sleep(2);
 				} catch (InterruptedException e) {
 				}
-				currThread.suspend();
+				currProc.suspend();
 			}
-			if (currProc.state == ProcessState.RUNNING)
+			if (currProc.isAlive() && currProc.state == ProcessState.RUNNING) {
 				currProc.state = ProcessState.READY;
-			if (currThread.isAlive()) {
-				threadQueue.add(currThread);
 				readyQueue.add(currProc);
-			} else {
+			} else if (!currProc.isAlive()){
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
 			}
+			while (!jobQueue.isEmpty()) {
+				jobQueue.peek().setProcessState(ProcessState.READY);
+				readyQueue.add(jobQueue.remove());
+			}
+			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
 		}
 		view.repaint();
 		view.revalidate();
-		view.queue.setText("Ready Queue: " + readyQueue);
+		view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
 	}
 
 	// MARIAM BEGIN HERE
@@ -177,7 +180,7 @@ public class OS {
 
 		}
 
-		while (!threadQueue.isEmpty()) {
+		while (!highPriority.isEmpty() || !mediumPriority.isEmpty() || !lowPriority.isEmpty() ) {
 			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 					+ "</html>");
@@ -185,9 +188,6 @@ public class OS {
 			highHelper();
 			mediumHelper();
 			lowHelper();
-
-			if (!highPriority.isEmpty())
-				lowHelper();
 
 		}
 
