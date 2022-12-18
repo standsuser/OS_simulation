@@ -148,7 +148,7 @@ public class OS {
 	public static void Scheduler_MLQS() {
 
 		Process currProc;
-
+		Thread currThread;
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
@@ -181,53 +181,109 @@ public class OS {
 			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 					+ "</html>");
-			Thread currThread = threadQueue.remove();
 
 			while (!highPriority.isEmpty()) {
+				currThread = threadQueue.remove();
 				currProc = highPriority.remove();
 				if (currProc.state == ProcessState.READY) {
 
-				}
+					currThread.run();// if it is first time to run
 
-				// ----------------------
-				if (currProc.state == ProcessState.READY) {
-					if (!currThread.isAlive()) {
-						currThread.start();// if it is first time to run
-					} else {
-						currThread.resume();// if it ran before
-					}
-					currProc.state = ProcessState.RUNNING;
-					try {
-						Thread.sleep(2);
-					} catch (InterruptedException e) {
-					}
-					currThread.suspend();
-				}
-				if (currProc.state == ProcessState.RUNNING)
-					currProc.state = ProcessState.READY;
-				if (currThread.isAlive()) {
-					threadQueue.add(currThread);
-					readyQueue.add(currProc);
+					if (currProc.state == ProcessState.RUNNING)
+						currThread.resume();
 				} else {
 					currProc.state = ProcessState.TERMINATED;
 					terminatedQueue.add(currProc);
 				}
-			} // -------------------------------------------
+				view.repaint();
+				view.revalidate();
+				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+						+ "</html>");
+			}
+
+			while (!mediumPriority.isEmpty()) {
+				currThread = threadQueue.remove();
+
+				currProc = mediumPriority.remove();
+				if (currProc.state == ProcessState.READY) {
+
+					currThread.run();// if it is first time to run
+
+					if (currProc.state == ProcessState.RUNNING)
+						currThread.resume();
+				} else {
+					currProc.state = ProcessState.TERMINATED;
+					terminatedQueue.add(currProc);
+				}
+				view.repaint();
+				view.revalidate();
+				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+						+ "</html>");
+			}
+			while (!lowPriority.isEmpty()) {
+				currThread = threadQueue.remove();
+
+				currProc = lowPriority.remove();
+				if (currProc.state == ProcessState.READY) {
+
+					currThread.run();// if it is first time to run
+
+					if (currProc.state == ProcessState.RUNNING)
+						currThread.resume();
+				} else {
+					currProc.state = ProcessState.TERMINATED;
+					terminatedQueue.add(currProc);
+				}
+				view.repaint();
+				view.revalidate();
+				view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
+						+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
+						+ "</html>");
+			}
+
 		}
+
+		// maybe add if thread queue not empty run it in high
+		// preemption to be added
 
 		view.repaint();
 		view.revalidate();
 		view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 				+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 				+ "</html>");
-
 	}
 
 	public static void Scheduler_FCFS() {
 
+		Process currProc;
+		Thread currThread;
+
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
+		}
+		view.queue.setText("Ready Queue: " + readyQueue);
+
+		while (!readyQueue.isEmpty()) {
+			currThread = threadQueue.remove();
+
+			currProc = readyQueue.remove();
+			if (currProc.state == ProcessState.READY) {
+
+				currThread.run();// if it is first time to run
+
+				if (currProc.state == ProcessState.RUNNING)
+					currThread.resume();
+			} else {
+				currProc.state = ProcessState.TERMINATED;
+				terminatedQueue.add(currProc);
+			}
+			view.repaint();
+			view.revalidate();
+			view.queue.setText("Ready Queue: " + readyQueue);
+
 		}
 
 		// check whose turn is it.
@@ -238,7 +294,7 @@ public class OS {
 
 	// MARIAM END
 
-	public static Process createProcess() {
+	public static Process createProcess() { // caroline said will take attributes a or b and priority
 		Process process = new Process();
 		return process;
 	}
@@ -251,7 +307,8 @@ public class OS {
 		Process.processC();
 		Process.processD();
 		// Scheduler_RR();
-		Scheduler_MLQS();
+		// Scheduler_MLQS();
+		Scheduler_FCFS();
 		System.out.println("Process Terminated!");
 	}
 
