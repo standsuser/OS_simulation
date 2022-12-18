@@ -1,13 +1,15 @@
 
 public class DeleteSemaphore extends BinarySemaphore {
 
-    public void semDeleteWait(Process process) {
-        if (availability == true)
+    public void semDeleteWait() {
+    	if (availability == true)
             availability = false;
         else {
-            process.state = ProcessState.BLOCKED;
-            queue.add(process);
-            while (process.state == ProcessState.BLOCKED) {
+        	Process currProcess = ((Process)Thread.currentThread());
+        	currProcess.state = ProcessState.BLOCKED;
+        	OS.blockedProcesses.add(currProcess);
+            queue.add(currProcess.getProcessID());
+            while (currProcess.state == ProcessState.BLOCKED) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -19,10 +21,18 @@ public class DeleteSemaphore extends BinarySemaphore {
     }
 
     public void semDeletePost() {
-        if (queue.isEmpty())
+    	if (queue.isEmpty())
             availability = true;
         else {
-            queue.remove().state = ProcessState.READY;
+        	for (Process t : OS.blockedProcesses) {
+        		if (t.getProcessID()==queue.peek()) {
+        			OS.blockedProcesses.remove(t);
+        			OS.readyQueue.add(t);
+        			t.setProcessState(ProcessState.READY);
+        			queue.remove();
+        			break;
+        		}
+        	}
             /*
              * remove a process P from s.queue /
              * / place process P on ready list

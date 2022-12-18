@@ -110,13 +110,14 @@ public class OS {
 	public static void Scheduler_RR() {
 		// move the processes from the jobQueue into the readyQueue
 		while (!jobQueue.isEmpty()) {
-			jobQueue.peek().setState(ProcessState.READY);
+			jobQueue.peek().setProcessState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
 		}
 
 		// Do the actual Round-Robin scheduling
 		while (!readyQueue.isEmpty() || !blockedProcesses.isEmpty()) {
-			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
+			view.queue.setText(
+					"<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
 			currProc = readyQueue.remove();
 			if (currProc.state == ProcessState.READY) {
 				if (!currProc.isAlive()) {
@@ -134,7 +135,7 @@ public class OS {
 			if (currProc.isAlive() && currProc.state == ProcessState.RUNNING) {
 				currProc.state = ProcessState.READY;
 				readyQueue.add(currProc);
-			} else if (!currProc.isAlive()){
+			} else if (!currProc.isAlive()) {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
 			}
@@ -142,19 +143,20 @@ public class OS {
 				jobQueue.peek().setProcessState(ProcessState.READY);
 				readyQueue.add(jobQueue.remove());
 			}
-			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
+			view.queue.setText(
+					"<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
 		}
 		view.repaint();
 		view.revalidate();
-		view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
+		view.queue
+				.setText("<html>Ready Queue:" + readyQueue + "<br/>Blocked Processes: " + blockedProcesses + "</html>");
 	}
 
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
 
-
 		while (!jobQueue.isEmpty()) {
-			jobQueue.peek().setState(ProcessState.READY);
+			jobQueue.peek().setProcessState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
 		}
 
@@ -180,16 +182,9 @@ public class OS {
 
 		}
 
-		while (!highPriority.isEmpty() || !mediumPriority.isEmpty() || !lowPriority.isEmpty() ) {
-			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
-					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
-					+ "</html>");
-
-			highHelper();
-			mediumHelper();
-			lowHelper();
-
-		}
+		highHelper();
+		mediumHelper();
+		lowHelper();
 
 		// maybe add if thread queue not empty run it in high
 		// preemption to be added
@@ -204,6 +199,9 @@ public class OS {
 	public static void lowHelper() {
 
 		while (!lowPriority.isEmpty()) {
+			System.out.println("(Emptying Low Priority) | Ready Queue: " + readyQueue + " | high priority Queue: "
+					+ highPriority
+					+ " | medium priority Queue: " + mediumPriority + " | low priority Queue: " + lowPriority + " |");
 			if (!highPriority.isEmpty())
 				highHelper();
 			if (!mediumPriority.isEmpty())
@@ -215,7 +213,7 @@ public class OS {
 				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-				currProc.resume();
+					currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -225,12 +223,16 @@ public class OS {
 			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 					+ "</html>");
+
 		}
 	}
 
 	public static void mediumHelper() {
 		while (!mediumPriority.isEmpty()) {
-			
+			System.out.println("(Emptying Medium Priority) | Ready Queue: " + readyQueue + " | high priority Queue: "
+					+ highPriority
+					+ " | medium priority Queue: " + mediumPriority + " | low priority Queue: " + lowPriority + " |");
+
 			if (!highPriority.isEmpty())
 				highHelper();
 
@@ -240,7 +242,7 @@ public class OS {
 				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-				currProc.resume();
+					currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -250,19 +252,23 @@ public class OS {
 			view.queue.setText("<html>Ready Queue:" + readyQueue + "<br/>high priority Queue: " + highPriority
 					+ "<br/>medium priority Queue: " + mediumPriority + "<br/>low priority Queue: " + lowPriority
 					+ "</html>");
+
 		}
 	}
 
 	public static void highHelper() {
 
 		while (!highPriority.isEmpty()) {
+			System.out.println("(Emptying High Priority) | Ready Queue: " + readyQueue + " | high priority Queue: "
+					+ highPriority
+					+ " | medium priority Queue: " + mediumPriority + " | low priority Queue: " + lowPriority + " |");
 			currProc = highPriority.remove();
 			if (currProc.state == ProcessState.READY) {
 
 				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-				currProc.resume();
+					currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -277,10 +283,9 @@ public class OS {
 
 	public static void Scheduler_FCFS() {
 
-		Process currProc;
 
 		while (!jobQueue.isEmpty()) {
-			jobQueue.peek().setState(ProcessState.READY);
+			jobQueue.peek().setProcessState(ProcessState.READY);
 			readyQueue.add(jobQueue.remove());
 		}
 		view.queue.setText("Ready Queue: " + readyQueue);
@@ -293,7 +298,7 @@ public class OS {
 				currProc.start();// if it is first time to run
 
 				if (currProc.state == ProcessState.RUNNING)
-				currProc.resume();
+					currProc.resume();
 			} else {
 				currProc.state = ProcessState.TERMINATED;
 				terminatedQueue.add(currProc);
@@ -304,7 +309,6 @@ public class OS {
 
 		}
 
-		
 		// check whose turn is it.
 		// put chosen process in running queue
 		// run it
@@ -313,31 +317,31 @@ public class OS {
 
 	// MARIAM END
 
-	public static Process createProcess(char type, Priority prio) { 
+	public static Process createProcess(char type, Priority prio) {
 		Process process = null;
 		switch (type) {
-		case 'A':
-			process = Process.processA();
-			break;
-		case 'B':
-			process = Process.processB();
-			break;
+			case 'A':
+				process = Process.processA();
+				break;
+			case 'B':
+				process = Process.processB();
+				break;
 		}
 		process.setProcessPriority(prio);
 		OS.jobQueue.add(process);
-		//System.out.println("Process added to Job Queue: " + OS.jobQueue); lets not use syso
+		System.out.println("Process added to Job Queue: " + OS.jobQueue);// lets not use syso
 		return process;
 	}
 
 	public static void main(String[] args) {
-		createProcess('A', null);
-		createProcess('B', null);
-		createProcess('A', null);
-		createProcess('B', null);
-		Scheduler_RR();
+		createProcess('A', Priority.High);
+		createProcess('B', Priority.Low);
+		createProcess('A', Priority.Medium);
+		createProcess('B', Priority.High);
+		// Scheduler_RR();
 		//Scheduler_MLQS();
-		// Scheduler_FCFS();
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+		 Scheduler_FCFS();
+		System.out.println("No Processes Left in Queues");
 	}
 
 }

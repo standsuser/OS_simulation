@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class Process {
+public class Process extends Thread{
 	// event , scheduling information
 	public static int ProcessIDCounter = 0; // Process Counter
 	public int programCounter;
@@ -23,104 +23,68 @@ public class Process {
 
 	// public String ProcessControlInformation;
 
-	public Process() {
+	public Process(Runnable r) {
+		super(r);
 		ProcessID = ProcessIDCounter++;
 		programCounter = 0;
 		state = ProcessState.NEW;
 		priority = Priority.Medium;
 		event = "";
-		OS.jobQueue.add(this);
-		System.out.println("Process added to Job Queue: " + OS.jobQueue);
+		System.out.println("bing");
 	}
 
 
-	public static void processA() {
-		Process processA = OS.createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				OS.assignSemaphore.semAssignWait(processA);
-				OS.printSemaphore.semPrintWait(processA);
-				OS.print("PID" + processA.getProcessID() + ": Enter File Name for Read.");
-				OS.printSemaphore.semPrintPost();
-				OS.assign("file");
-				OS.assignSemaphore.semAssignPost();
-				processA.state = ProcessState.RUNNING;
-				OS.readSemaphore.semReadWait(processA);// zeyad : DEADLOCK MIGHT HAPPEN HEHE
-				OS.getVariableSemaphore.semGetVariableWait(processA);
-				OS.readFile(OS.getVariable("file"));
-				OS.readSemaphore.semReadPost();// zeyad :not sure mafrood abdlha m3a t7tha wla la
-				OS.getVariableSemaphore.semGetVariablePost();
-				OS.deleteSemaphore.semDeleteWait(processA);
-				OS.delete("file");
-				OS.deleteSemaphore.semDeletePost();
-				processA.state = ProcessState.TERMINATED;
-			}
-		});
-		OS.threadQueue.add(a);
+	public static Process processA() {
+		Process processA = new Process(new Runnable() {
+            public void run() {
+                OS.assignSemaphore.semAssignWait();
+                OS.printSemaphore.semPrintWait();
+                OS.print("Enter File Name for Read.");
+                OS.printSemaphore.semPrintPost();
+                OS.assign("file");
+                OS.assignSemaphore.semAssignPost();
+                OS.readSemaphore.semReadWait();
+                OS.getVariableSemaphore.semGetVariableWait();
+                OS.readFile(OS.getVariable("file"));
+                OS.getVariableSemaphore.semGetVariablePost();
+                OS.readSemaphore.semReadPost();
+                OS.deleteSemaphore.semDeleteWait();
+                OS.delete("file");
+                OS.deleteSemaphore.semDeletePost();
+            }
+        });
+		return processA;
 	}
 
 	// assign write
-	public static void processB() {
-		Process processB = OS.createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				OS.assignSemaphore.semAssignWait(processB);
-				OS.printSemaphore.semPrintWait(processB);
-				OS.print("PID" + processB.getProcessID() + ": Enter File Name for Write.");
-				OS.printSemaphore.semPrintPost();
-				OS.assign("file");
-				OS.assignSemaphore.semAssignPost();
-				OS.assignSemaphore.semAssignWait(processB);
-				OS.printSemaphore.semPrintWait(processB);
-				OS.print("PID" + processB.getProcessID() + ": Enter data for Write.");
-				OS.printSemaphore.semPrintPost();
-				OS.assign("data");
-				OS.assignSemaphore.semAssignPost();
-				processB.state = ProcessState.RUNNING;
-				OS.writeSemaphore.semWriteWait(processB);
-				OS.getVariableSemaphore.semGetVariableWait(processB);
-				OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
-				OS.writeSemaphore.semWritePost();
-				OS.getVariableSemaphore.semGetVariablePost();
-				OS.deleteSemaphore.semDeleteWait(processB);
-				OS.delete("file");
-				OS.delete("data");
-				OS.deleteSemaphore.semDeletePost();
-				processB.state = ProcessState.TERMINATED;
-			}
-		});
-		OS.threadQueue.add(a);
-	}
-
-	public static void processC() {
-		Process processC = OS.createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				System.out.println("Ich leibe meine frau");
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-				}
-
-			}
-		});
-		OS.threadQueue.add(a);
-	}
-
-	public static void processD() {
-		Process processD = OS.createProcess();
-		Thread a = new Thread(new Runnable() {
-			public void run() {
-				System.out.println("Du bist mein schatz");
-				try {
-					Thread.sleep(20);
-				} catch (InterruptedException e) {
-				}
-
-			}
-		});
-		OS.threadQueue.add(a);
-	}
+	public static Process processB() {
+        Process processB = new Process(new Runnable() {
+            public void run() {
+                OS.assignSemaphore.semAssignWait();
+                OS.printSemaphore.semPrintWait();
+                OS.print("Enter File Name for Write.");
+                OS.printSemaphore.semPrintPost();
+                OS.assign("file");
+                OS.assignSemaphore.semAssignPost();
+                OS.assignSemaphore.semAssignWait();
+                OS.printSemaphore.semPrintWait();
+                OS.print("Enter data for Write.");
+                OS.printSemaphore.semPrintPost();
+                OS.assign("data");
+                OS.assignSemaphore.semAssignPost();
+                OS.writeSemaphore.semWriteWait();
+                OS.getVariableSemaphore.semGetVariableWait();
+                OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
+                OS.writeSemaphore.semWritePost();
+                OS.getVariableSemaphore.semGetVariablePost();
+                OS.deleteSemaphore.semDeleteWait();
+                OS.delete("file");
+                OS.delete("data");
+                OS.deleteSemaphore.semDeletePost();
+            }
+        });
+		return processB;
+    }
 
 	public String toString() {
 		return this.ProcessID + "";
@@ -174,19 +138,19 @@ public class Process {
 		this.data = data;
 	}
 
-	public ProcessState getState() {
+	public ProcessState getProcessState() {
 		return state;
 	}
 
-	public void setState(ProcessState state) {
+	public void setProcessState(ProcessState state) {
 		this.state = state;
 	}
 
-	public Priority getPriority() {
+	public Priority getProcessPriority() {
 		return priority;
 	}
 
-	public void setPriority(Priority priority) {
+	public void setProcessPriority(Priority priority) {
 		this.priority = priority;
 	}
 

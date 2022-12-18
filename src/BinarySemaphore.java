@@ -3,10 +3,10 @@ import java.util.Queue;
 
 public class BinarySemaphore {
 	boolean availability;// true = 1 , false = 0
-	Queue<Process> queue;
+	Queue<Integer> queue;
 
 	public BinarySemaphore() {
 		availability = true;
-		queue = new LinkedList<Process>();
+		queue = new LinkedList<Integer>();
 	}
 }

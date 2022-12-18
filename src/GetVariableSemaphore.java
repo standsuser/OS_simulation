@@ -5,29 +5,36 @@ public class GetVariableSemaphore extends CountingSemaphore {
         // TODO Auto-generated constructor stub
     }
 
-    public void semGetVariableWait(Process process) {
+    public void semGetVariableWait() {
         count--;
         if (count < 0) {
-            process.state = ProcessState.BLOCKED;
-            queue.add(process);
-            while (process.state == ProcessState.BLOCKED) {
+        	Process currProcess = ((Process)Thread.currentThread());
+        	currProcess.state = ProcessState.BLOCKED;
+        	OS.blockedProcesses.add(currProcess);
+            queue.add(currProcess.getProcessID());
+            while (currProcess.state == ProcessState.BLOCKED) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                 }
             }
-            process.state = ProcessState.RUNNING;
-            // place this process in s.queue
-            // block this process
+            /* place this process in s.queue */
+            /* block this process */
         }
     }
 
     public void semGetVariablePost() {
         count++;
         if (count <= 0) {
-            queue.remove().state = ProcessState.READY;
-            // remove a process P from s.queue
-            // place process P on ready list
+        	for (Process t : OS.blockedProcesses) {
+        		if (t.getProcessID()==queue.peek()) {
+        			OS.blockedProcesses.remove(t);
+        			OS.readyQueue.add(t);
+        			t.setProcessState(ProcessState.READY);
+        			queue.remove();
+        			break;
+        		}
+        	}
         }
     }
 
