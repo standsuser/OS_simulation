@@ -1,14 +1,5 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
 
-public class Process extends Thread{
+public class Process extends Thread {
 	// event , scheduling information
 	private static int ProcessIDCounter = 0; // Process Counter
 	private int programCounter;
@@ -32,58 +23,59 @@ public class Process extends Thread{
 		event = "";
 	}
 
-
 	public static Process processA() {
+		System.out.println("Process Type A created");
 		Process processA = new Process(new Runnable() {
-            public void run() {
-                OS.assignSemaphore.semAssignWait();
-                OS.printSemaphore.semPrintWait();
-                OS.print("Enter File Name for Read.");
-                OS.printSemaphore.semPrintPost();
-                OS.assign("file");
-                OS.assignSemaphore.semAssignPost();
-                OS.readSemaphore.semReadWait();
-                OS.getVariableSemaphore.semGetVariableWait();
-                OS.readFile(OS.getVariable("file"));
-                OS.getVariableSemaphore.semGetVariablePost();
-                OS.readSemaphore.semReadPost();
-                OS.deleteSemaphore.semDeleteWait();
-                OS.delete("file");
-                OS.deleteSemaphore.semDeletePost();
-            }
-        });
+			public void run() {
+				OS.assignSemaphore.semAssignWait();
+				OS.printSemaphore.semPrintWait();
+				OS.print("Enter File Name for Read.");
+				OS.printSemaphore.semPrintPost();
+				OS.assign("file");
+				OS.assignSemaphore.semAssignPost();
+				OS.readSemaphore.semReadWait();
+				OS.getVariableSemaphore.semGetVariableWait();
+				OS.readFile(OS.getVariable("file"));
+				OS.getVariableSemaphore.semGetVariablePost();
+				OS.readSemaphore.semReadPost();
+				OS.deleteSemaphore.semDeleteWait();
+				OS.delete("file");
+				OS.deleteSemaphore.semDeletePost();
+			}
+		});
 		return processA;
 	}
 
 	// assign write
 	public static Process processB() {
-        Process processB = new Process(new Runnable() {
-            public void run() {
-                OS.assignSemaphore.semAssignWait();
-                OS.printSemaphore.semPrintWait();
-                OS.print("Enter File Name for Write.");
-                OS.printSemaphore.semPrintPost();
-                OS.assign("file");
-                OS.assignSemaphore.semAssignPost();
-                OS.assignSemaphore.semAssignWait();
-                OS.printSemaphore.semPrintWait();
-                OS.print("Enter data for Write.");
-                OS.printSemaphore.semPrintPost();
-                OS.assign("data");
-                OS.assignSemaphore.semAssignPost();
-                OS.writeSemaphore.semWriteWait();
-                OS.getVariableSemaphore.semGetVariableWait();
-                OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
-                OS.writeSemaphore.semWritePost();
-                OS.getVariableSemaphore.semGetVariablePost();
-                OS.deleteSemaphore.semDeleteWait();
-                OS.delete("file");
-                OS.delete("data");
-                OS.deleteSemaphore.semDeletePost();
-            }
-        });
+		System.out.println("Process Type B created");
+		Process processB = new Process(new Runnable() {
+			public void run() {
+				OS.assignSemaphore.semAssignWait();
+				OS.printSemaphore.semPrintWait();
+				OS.print("Enter File Name for Write.");
+				OS.printSemaphore.semPrintPost();
+				OS.assign("file");
+				OS.assignSemaphore.semAssignPost();
+				OS.assignSemaphore.semAssignWait();
+				OS.printSemaphore.semPrintWait();
+				OS.print("Enter data for Write.");
+				OS.printSemaphore.semPrintPost();
+				OS.assign("data");
+				OS.assignSemaphore.semAssignPost();
+				OS.writeSemaphore.semWriteWait();
+				OS.getVariableSemaphore.semGetVariableWait();
+				OS.writeFile(OS.getVariable("file"), OS.getVariable("data"));
+				OS.writeSemaphore.semWritePost();
+				OS.getVariableSemaphore.semGetVariablePost();
+				OS.deleteSemaphore.semDeleteWait();
+				OS.delete("file");
+				OS.delete("data");
+				OS.deleteSemaphore.semDeletePost();
+			}
+		});
 		return processB;
-    }
+	}
 
 	public String toString() {
 		return this.ProcessID + "";

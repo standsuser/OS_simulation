@@ -1,10 +1,5 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Scanner;
-
 import javax.swing.JFrame;
 
 public class Interrupts_Exceptions {

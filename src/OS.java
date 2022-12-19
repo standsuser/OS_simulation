@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.lang.Thread.State;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ public class OS {
 	public static Process currProc;
 
 	public static void readFile(String fileName) {
+		System.out.println("readFile method called");
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
@@ -42,6 +42,7 @@ public class OS {
 	}
 
 	public static void writeFile(String fileName, String data) {
+		System.out.println("writeFile method called");
 		Path br = Path.of(fileName); // creates a file if not found
 		try {
 			Files.writeString(br, data);
@@ -51,6 +52,7 @@ public class OS {
 	}
 
 	public static void print(String st) {
+		System.out.println("print method called");
 		boolean flag = false;
 		System.out.print("PID" + currProc.getProcessID() + ": ");
 		for (int i = 0; i < variableNames.length; i++) {
@@ -66,6 +68,7 @@ public class OS {
 	}
 
 	public static void assign(String name) { // st This is a string
+		System.out.println("assign method called");
 		Scanner sc = new Scanner(System.in);
 		String value = sc.nextLine();
 		variableNames[counter] = name;
@@ -78,6 +81,7 @@ public class OS {
 	}
 
 	public static void delete(String name) { // st This is a string
+		System.out.println("delete method called");
 		boolean flag = false;
 		for (int i = 0; i < variableNames.length; i++) {
 			if (variableNames[i] != null && variableNames[i].equals(name)) {
@@ -93,6 +97,7 @@ public class OS {
 	}
 
 	public static String getVariable(String name) { // st This is a string
+		System.out.println("getVariable method called");
 		boolean flag = false;
 		String result = "";
 		for (int i = 0; i < variableNames.length; i++) {
@@ -108,6 +113,7 @@ public class OS {
 	}
 
 	public static void Scheduler_RR() {
+		System.out.println("Round Robin Scheduler method called");
 		// move the processes from the jobQueue into the readyQueue
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setProcessState(ProcessState.READY);
@@ -157,6 +163,7 @@ public class OS {
 
 	// MARIAM BEGIN HERE
 	public static void Scheduler_MLQS() {
+		System.out.println("MLQS Scheduler method called");
 
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setProcessState(ProcessState.READY);
@@ -287,16 +294,10 @@ public class OS {
 				+ "<br/>Blocked Processes: " + blockedProcesses + "<br/>Terminated Queue " + terminatedQueue
 				+ "</html>");
 
-		// highHelper();
-		// mediumHelper();
-		// lowHelper();
-
-		// maybe add if thread queue not empty run it in high
-		// preemption to be added
-
 	}
 
 	public static void Scheduler_FCFS() {
+		System.out.println("FCFS Scheduler method called");
 
 		while (!jobQueue.isEmpty()) {
 			jobQueue.peek().setProcessState(ProcessState.READY);
@@ -338,6 +339,7 @@ public class OS {
 	}
 
 	public static Process createProcess(char type, Priority prio) {
+		System.out.println("createProcess method called");
 		Process process = null;
 		switch (type) {
 			case 'A':

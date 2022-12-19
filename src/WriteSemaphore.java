@@ -1,15 +1,16 @@
-import java.util.Queue;
 
 public class WriteSemaphore extends BinarySemaphore {
 
     public void semWriteWait() {
+        System.out.println("SemWait Write Called");
         if (availability == true)
             availability = false;
         else {
             Process currProcess = ((Process) Thread.currentThread());
-            currProcess.setProcessState(ProcessState.BLOCKED);
-            OS.blockedProcesses.add(currProcess);
             queue.add(currProcess.getProcessID());
+            OS.blockedProcesses.add(currProcess);
+            System.out.println("Process" + OS.currProc.getProcessID() + " has been Blocked");
+            currProcess.setProcessState(ProcessState.BLOCKED);
             while (currProcess.getProcessState() == ProcessState.BLOCKED) {
                 try {
                     Thread.sleep(100);
@@ -22,6 +23,7 @@ public class WriteSemaphore extends BinarySemaphore {
     }
 
     public void semWritePost() {
+        System.out.println("SemPost Write Called");
         if (queue.isEmpty())
             availability = true;
         else {
@@ -29,8 +31,10 @@ public class WriteSemaphore extends BinarySemaphore {
                 if (t.getProcessID() == queue.peek()) {
                     OS.blockedProcesses.remove(t);
                     OS.readyQueue.add(t);
+                    System.out.println("Process" + t.getProcessID() + " has been Unblocked");
                     t.setProcessState(ProcessState.READY);
                     queue.remove();
+
                     break;
                 }
             }
