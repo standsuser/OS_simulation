@@ -10,16 +10,16 @@ import java.util.Scanner;
 
 public class Process extends Thread{
 	// event , scheduling information
-	public static int ProcessIDCounter = 0; // Process Counter
-	public int programCounter;
-	public int ProcessID; // ID
-	public int ParentProcessID; // ID of parent
-	public int userID;
-	public String registers;
-	public String data;
-	public ProcessState state; // State
-	public Priority priority; // Priority
-	public String event; // Event the process is waiting for before it can run again
+	private static int ProcessIDCounter = 0; // Process Counter
+	private int programCounter;
+	private int ProcessID; // ID
+	private int ParentProcessID; // ID of parent
+	private int userID;
+	private String registers;
+	private String data;
+	private ProcessState state; // State
+	private Priority priority; // Priority
+	private String event; // Event the process is waiting for before it can run again
 
 	// public String ProcessControlInformation;
 
@@ -30,7 +30,6 @@ public class Process extends Thread{
 		state = ProcessState.NEW;
 		priority = Priority.Medium;
 		event = "";
-		System.out.println("bing");
 	}
 
 

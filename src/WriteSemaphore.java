@@ -7,10 +7,10 @@ public class WriteSemaphore extends BinarySemaphore {
             availability = false;
         else {
             Process currProcess = ((Process) Thread.currentThread());
-            currProcess.state = ProcessState.BLOCKED;
+            currProcess.setProcessState(ProcessState.BLOCKED);
             OS.blockedProcesses.add(currProcess);
             queue.add(currProcess.getProcessID());
-            while (currProcess.state == ProcessState.BLOCKED) {
+            while (currProcess.getProcessState() == ProcessState.BLOCKED) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
